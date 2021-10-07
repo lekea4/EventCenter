@@ -1,5 +1,6 @@
 using EventCenter.Domain.Configurations;
 using EventCenter.Infrastructure;
+using EventCenter.Infrastructure.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,13 +43,17 @@ namespace EventCenter
                 .AllowAnyHeader());
             });
 
+           
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling =
+            Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventCenters", Version = "v1" });
             });
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(MapperInitializer));
         }
 
