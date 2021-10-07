@@ -12,8 +12,8 @@ namespace EventCenter.Domain.DTOs
     {
         public int Id { get; set; }
 
+        public virtual IList<EventPlaceDTO> EventPlaces { get; set; }
 
 
-       
     }
 }
