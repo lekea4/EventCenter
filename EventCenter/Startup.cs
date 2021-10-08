@@ -1,3 +1,4 @@
+using EventCenter.API;
 using EventCenter.Domain.Configurations;
 using EventCenter.Infrastructure;
 using EventCenter.Infrastructure.Repository;
@@ -52,7 +53,8 @@ namespace EventCenter
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventCenters", Version = "v1" });
             });
-
+            services.AddAuthentication();
+            services.ConfigureIdentity();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(MapperInitializer));
         }
