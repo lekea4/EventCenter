@@ -15,7 +15,5 @@ namespace EventCenter.Domain.Base
         [Required]
         public string State { get; set; }
 
-        [Required]
-        public string Address { get; set; }
     }
 }
