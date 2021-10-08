@@ -18,6 +18,7 @@ namespace EventCenter.Domain.Configurations
             CreateMap<Location, LocationBase>().ReverseMap();
             CreateMap<EventPlace, EventPlaceDTO>().ReverseMap();
             CreateMap<EventPlace, EventPlaceBase>().ReverseMap();
+            CreateMap<ApiUser, UserDTO>().ReverseMap();
         }
     }
 }
