@@ -14,7 +14,6 @@ namespace EventCenter.Domain.Entities
 
         public string State { get; set; }
 
-        public string Address { get; set; }
 
         public virtual IList<EventPlace> EventPlaces { get; set; }
     }

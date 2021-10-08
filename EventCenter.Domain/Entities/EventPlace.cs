@@ -13,6 +13,8 @@ namespace EventCenter.Domain.Entities
 
         public string Name { get; set; }
 
+        public string Address { get; set; }
+
         [ForeignKey(nameof(Location))]
 
         public int LocationId { get; set; }
