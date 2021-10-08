@@ -20,13 +20,13 @@ namespace EventCenter.API.Controllers
         private readonly IMapper _mapper;
 
 
-        public LocationController(IUnitOfWork unitOfWork, ILogger<LocationController> logger, IMapper  mapper)
+        public LocationController(IUnitOfWork unitOfWork, ILogger<LocationController> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
         }
-         
+
         [HttpGet]
         public async Task<IActionResult> GetLocationAsync()
         {
@@ -42,5 +42,22 @@ namespace EventCenter.API.Controllers
                 return StatusCode(500, "Internal Server Error. Please try again later.");
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLocationByIdAsync(int id)
+        {
+            try
+            {
+                var locations = await _unitOfWork.Locations.Get(q => q.Id == id, new List<string> { "EventCenters" });
+                var result = _mapper.Map<IList<LocationDTO>>(locations);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Something went wrong in the {nameof(GetLocationAsync)}");
+                return StatusCode(500, "Internal Server Error. Please try again later.");
+            }
+        }
+
     }
 }
