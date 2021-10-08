@@ -13,14 +13,14 @@ namespace EventCenter.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationController : ControllerBase
+    public class EventCenterController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<LocationController> _logger;
+        private readonly ILogger<EventCenterController> _logger;
         private readonly IMapper _mapper;
 
 
-        public LocationController(IUnitOfWork unitOfWork, ILogger<LocationController> logger, IMapper mapper)
+        public EventCenterController(IUnitOfWork unitOfWork, ILogger<EventCenterController> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -30,17 +30,17 @@ namespace EventCenter.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetLocationAsync()
+        public async Task<IActionResult> GetEventCenterAsync()
         {
             try
             {
-                var locations = await _unitOfWork.Locations.GetAll();
-                var result = _mapper.Map<IList<LocationDTO>>(locations);
+                var eventPlaces = await _unitOfWork.EventPlaces.GetAll();
+                var result = _mapper.Map<IList<EventPlaceDTO>>(eventPlaces);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetLocationAsync)}");
+                _logger.LogError(ex, $"Something went wrong in the {nameof(GetEventCenterAsync)}");
                 return StatusCode(500, "Internal Server Error. Please try again later.");
             }
         }
@@ -48,20 +48,30 @@ namespace EventCenter.API.Controllers
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetLocationByIdAsync(int id)
+        public async Task<IActionResult> GetEventCenterByIdAsync(int id)
         {
             try
             {
-                var locations = await _unitOfWork.Locations.Get(q => q.Id == id, new List<string> { "EventCenters" });
-                var result = _mapper.Map<IList<LocationDTO>>(locations);
+                var eventplaces = await _unitOfWork.EventPlaces.Get(q => q.Id == id, new List<string> { "Locations" });
+                var result = _mapper.Map<IList<EventPlaceDTO>>(eventplaces);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetLocationAsync)}");
+                _logger.LogError(ex, $"Something went wrong in the {nameof(GetEventCenterByIdAsync)}");
                 return StatusCode(500, "Internal Server Error. Please try again later.");
             }
         }
+
+
+
+
+
+
+
+
+
+
 
     }
 }
