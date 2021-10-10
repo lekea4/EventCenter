@@ -5,7 +5,7 @@ using System;
 
 namespace EventCenter.Infrastructure
 {
-    public class AppDBContext : IdentityDbContext
+    public class AppDBContext : IdentityDbContext<ApiUser>
     {
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
