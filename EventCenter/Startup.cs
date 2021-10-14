@@ -1,6 +1,8 @@
+using EventCenter.API;
 using EventCenter.Domain.Configurations;
 using EventCenter.Infrastructure;
 using EventCenter.Infrastructure.Repository;
+using EventCenter.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -53,7 +55,12 @@ namespace EventCenter
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventCenters", Version = "v1" });
             });
 
+
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthManager, AuthManager>();
             services.AddAutoMapper(typeof(MapperInitializer));
         }
 
