@@ -1,4 +1,5 @@
-﻿using EventCenter.Domain.Entities;
+﻿using EventCenter.Domain.Configurations.EntitiesRole;
+using EventCenter.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,6 +17,10 @@ namespace EventCenter.Infrastructure
         {
             base.OnModelCreating(builder);
 
+
+            builder.ApplyConfiguration(new EventPlaceConfiguration());
+            builder.ApplyConfiguration(new LocationConfiguration());
+            builder.ApplyConfiguration(new RoleConfiguration());
         }
 
 

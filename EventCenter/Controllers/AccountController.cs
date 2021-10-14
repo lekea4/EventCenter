@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EventCenter.Domain.DTOs;
 using EventCenter.Domain.Entities;
+using EventCenter.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,16 @@ namespace EventCenter.API.Controllers
         private readonly UserManager<ApiUser> _userManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
+        private readonly IAuthManager _authmanager;
 
         public AccountController(UserManager<ApiUser> userManager,
-            ILogger<AccountController> logger, IMapper mapper)
+            ILogger<AccountController> logger, IMapper mapper, IAuthManager authManager)
         {
 
             _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
+            _authmanager = authManager;
         }
 
 
@@ -37,7 +40,7 @@ namespace EventCenter.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
         {
-             _logger.LogInformation($"Registration Attempt for {userDTO.Email}");
+             _logger.LogInformation($"Registration Attempt for {userDTO.Email}"); 
 
             if (!ModelState.IsValid)
             {
@@ -59,6 +62,7 @@ namespace EventCenter.API.Controllers
                     return BadRequest(ModelState);
                 }
 
+               await _userManager.AddToRoleAsync(user, userDTO.Roles);
                 return Accepted();
             }
 
@@ -73,38 +77,37 @@ namespace EventCenter.API.Controllers
 
         }
 
-        //[HttpPost]
-        //[Route("Login")]
-        //public async Task<IActionResult> Login([FromBody] LoginDTO userDTO)
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO userDTO)
 
-        //{
-        //    _logger.LogInformation($"Login Attempt for {userDTO.Email}");
+        {
+            _logger.LogInformation($"Login Attempt for {userDTO.Email}");
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    try
-        //    {
-        //        var result = await _signInManager.PasswordSignInAsync(userDTO.Email, userDTO.Password, false, false);
+            try
+            {
+                if (!await _authmanager.ValidateUser(userDTO))
+                {
+                    return Unauthorized();
+                }
 
-        //        if (!result.Succeeded)
-        //        {
-        //            return Unauthorized(userDTO);
-        //        }
-        //        return Accepted();
-        //    }
+                return Accepted(new { Token = await _authmanager.CreateToken() });
+            }
 
-                
-        //    catch (Exception ex)
-        //    {
 
-        //        _logger.LogError(ex, $"Something went wrong in the {nameof(Login)}");
-        //        return Problem($"Something went wrong in the {nameof(Login)}", statusCode: 500);
-        //    }
+            catch (Exception ex)
+            {
 
-        //}
+                _logger.LogError(ex, $"Something went wrong in the {nameof(Login)}");
+                return Problem($"Something went wrong in the {nameof(Login)}", statusCode: 500);
+            }
+
+        }
 
 
 

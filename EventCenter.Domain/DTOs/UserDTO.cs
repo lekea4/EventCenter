@@ -15,5 +15,7 @@ namespace EventCenter.Domain.DTOs
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
+        public string Roles { get; set; }
+
     }
 }
