@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
-//using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -19,7 +19,7 @@ namespace EventCenter.Infrastructure.Services
         private readonly IConfiguration _configuration;
         private  ApiUser _user;
 
-        public AuthManager(UserManager<ApiUser> userManager, IConfiguration configuration, ApiUser user)
+        public AuthManager(UserManager<ApiUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -39,12 +39,13 @@ namespace EventCenter.Infrastructure.Services
             var jwtSettings = _configuration.GetSection("Jwt");
             var expiration = DateTime.Now.AddMinutes(Convert.ToDouble(
                 jwtSettings.GetSection("lifetime").Value));
-
+           
             var token = new JwtSecurityToken(
-                 issuer: jwtSettings.GetSection("Issuer").Value,
+                
+                issuer: jwtSettings.GetSection("Issuer").Value,
                 claims: claims,
                 expires: expiration,
-                signingCredentials = signingCredentials
+                signingCredentials: signingCredentials
                 );
             return token;
 
