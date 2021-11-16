@@ -55,7 +55,7 @@ namespace EventCenter
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventCenters", Version = "v1" });
             });
 
-
+           
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
@@ -79,6 +79,8 @@ namespace EventCenter
             app.UseCors("AllowAll"); // The enable the app to use Cors 
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
